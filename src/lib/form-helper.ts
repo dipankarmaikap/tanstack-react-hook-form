@@ -51,15 +51,15 @@ export const generateResponse = <T>(
 ): Response => {
   const request = getWebRequest();
   const responseString = JSON.stringify(data);
-  const responseType = request?.headers.get("accept");
+  const responseType = request?.headers.get("X-Response-Type") || "redirect";
 
   const headers = new Headers({
     "Content-Type": "application/json",
   });
 
-  const isJson = responseType?.includes("application/json");
+  const isRedirect = responseType?.includes("redirect");
 
-  if (!isJson) {
+  if (isRedirect) {
     const requestSource = new URL(request?.headers.get("referer") || "");
     headers.set("Location", requestSource.pathname);
     headers.set(
@@ -71,7 +71,27 @@ export const generateResponse = <T>(
   }
 
   return new Response(responseString, {
-    status: isJson ? 200 : status,
+    status: isRedirect ? status : 200,
     headers,
   });
+};
+export const submitFormData = async <T>(
+  url: string,
+  formData: FormData
+): Promise<T> => {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Accept: "application/json",
+        "X-Response-Type": "json",
+      },
+    });
+
+    return (await response.json()) as T;
+  } catch (error) {
+    console.error("Network error:", error);
+    throw new Error("Something went wrong. Try again.");
+  }
 };

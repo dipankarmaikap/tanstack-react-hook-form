@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpSchema, type SignUpSchemaType } from "~/app/register/schema";
 import { registerUser } from "~/app/register/actions";
 import { Route } from "~/routes/register";
-import { ValidationResponse } from "~/lib/form-helper";
+import { submitFormData, ValidationResponse } from "~/lib/form-helper";
 import Input from "~/components/Input";
 
 export default function SignupForm() {
@@ -20,12 +20,9 @@ export default function SignupForm() {
     if (!e) return;
     try {
       const formData = new FormData(e.target as HTMLFormElement);
-      const response = (await registerUser({
-        data: formData,
-        headers: {
-          accept: "application/json",
-        },
-      })) as unknown as ValidationResponse<SignUpSchemaType>;
+      const response = await submitFormData<
+        ValidationResponse<SignUpSchemaType>
+      >(registerUser.url, formData);
       if (!response.success) {
         Object.entries(response.errors).forEach(([field, message]) => {
           setError(field as keyof SignUpSchemaType, {
