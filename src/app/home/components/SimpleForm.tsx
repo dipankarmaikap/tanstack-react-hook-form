@@ -3,7 +3,8 @@ import clsx from "clsx";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { registerSimpleForm } from "~/app/home/actions";
 import { SimpleFormSchema, type SimpleFormSchemaType } from "~/app/home/schema";
-import { submitFormData, type ValidationResponse } from "~/lib/form-helper";
+import { type ValidationResponse } from "~/lib/form-helper";
+import { submitFormData } from "~/lib/submitFormData";
 import { Route } from "~/routes";
 
 export default function SimpleForm() {

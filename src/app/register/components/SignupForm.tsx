@@ -3,8 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpSchema, type SignUpSchemaType } from "~/app/register/schema";
 import { registerUser } from "~/app/register/actions";
 import { Route } from "~/routes/register";
-import { submitFormData, ValidationResponse } from "~/lib/form-helper";
+import { ValidationResponse } from "~/lib/form-helper";
 import Input from "~/components/Input";
+import { submitFormData } from "~/lib/submitFormData";
 
 export default function SignupForm() {
   const { flashData } = Route.useLoaderData();
